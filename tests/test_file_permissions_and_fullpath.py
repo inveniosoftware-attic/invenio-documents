@@ -32,7 +32,7 @@ class DocumentAndLegacyRestrictionsTest(InvenioTestCase):
 
     def setUp(self):
         """Run before the test."""
-        from invenio.modules.documents.api import Document
+        from invenio_documents.api import Document
         self.document = Document.create({'title': 'J.A.R.V.I.S'})
         self.path = tempfile.mkdtemp()
 
@@ -43,7 +43,7 @@ class DocumentAndLegacyRestrictionsTest(InvenioTestCase):
 
     def test_legacy_syntax(self):
         """Test legacy syntax."""
-        from invenio.modules.documents.utils import _parse_legacy_syntax
+        from invenio_documents.utils import _parse_legacy_syntax
         uuid_1 = 'recid:22'
         uuid_2 = 'recid:22-filename.jpg'
 
@@ -64,7 +64,7 @@ class DocumentAndLegacyRestrictionsTest(InvenioTestCase):
     def test_not_found_error(self):
         """Test when the file doesn't exists."""
         from werkzeug.exceptions import NotFound
-        from invenio.modules.documents.utils import identifier_to_path
+        from invenio_documents.utils import identifier_to_path
         self.assertRaises(
             NotFound,
             identifier_to_path,
@@ -73,13 +73,13 @@ class DocumentAndLegacyRestrictionsTest(InvenioTestCase):
         self.assertRaises(
             NotFound,
             identifier_to_path,
-            self.document.get('uuid')
+            self.document.get('_id')
         )
 
     def test_forbidden_error(self):
         """Test when the file is restricted."""
         from werkzeug.exceptions import Forbidden
-        from invenio.modules.documents.utils import (
+        from invenio_documents.utils import (
             identifier_to_path_and_permissions
         )
         content = 'S.H.I.E.L.D.'
@@ -90,16 +90,11 @@ class DocumentAndLegacyRestrictionsTest(InvenioTestCase):
 
         uri = os.path.join(self.path, 'classified.txt')
         self.document.setcontents(sourcepath, uri)
-        self.document['restriction']['email'] = 'happy@cern.ch'
+        self.document['restriction'] = {'email': 'happy@cern.ch'}
         test_document = self.document.update()
         self.assertRaises(
             Forbidden,
             identifier_to_path_and_permissions,
-            test_document.get('uuid')
+            test_document.get('_id')
         )
         shutil.rmtree(sourcepath, ignore_errors=True)
-
-TEST_SUITE = make_test_suite(DocumentAndLegacyRestrictionsTest,)
-
-if __name__ == "__main__":
-    run_test_suite(TEST_SUITE)

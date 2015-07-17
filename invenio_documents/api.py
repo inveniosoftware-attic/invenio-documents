@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2013, 2014 CERN.
+# Copyright (C) 2013, 2014, 2015 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,61 +17,82 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
+"""Define document API.
+
+Following example shows how to handle documents metadata::
+
+    >>> from flask import g
+    >>> from invenio.base.factory import create_app
+    >>> app = create_app()
+    >>> ctx = app.test_request_context()
+    >>> ctx.push()
+    >>> from invenio_documents import api
+    >>> d = api.Document.create({'title': 'Title 1'})
+    >>> d['title']
+    'Title 1'
+    >>> d['creator']
+    0
+    >>> d['title'] = 'New Title 1'
+    >>> d = d.update()
+    >>> api.Document.get_document(d['_id'])['title']
+    'New Title 1'
+    >>> ctx.pop()
 """
-    invenio.modules.documents.api
-    -----------------------------
 
-    Documents API
-
-    Following example shows how to handle documents metadata::
-
-        >>> from flask import g
-        >>> from invenio.base.factory import create_app
-        >>> app = create_app()
-        >>> ctx = app.test_request_context()
-        >>> ctx.push()
-        >>> from invenio.modules.documents import api
-        >>> from invenio.modules.jsonalchemy.jsonext.engines import memory
-        >>> app.config['DOCUMENTS_ENGINE'] = \
-        "invenio.modules.jsonalchemy.jsonext.engines.memory:MemoryStorage"
-        >>> d = api.Document.create({'title': 'Title 1'})
-        >>> d['title']
-        'Title 1'
-        >>> d['creator']
-        0
-        >>> d['title'] = 'New Title 1'
-        >>> d = d.update()
-        >>> api.Document.get_document(d['_id'])['title']
-        'New Title 1'
-        >>> ctx.pop()
-"""
+import uuid
+from datetime import datetime
 
 import fs
 import six
-
-from datetime import datetime
+from flask import current_app
 from fs.opener import opener
+from jsonschema import validate
 
-from invenio.modules.jsonalchemy.wrappers import SmartJson
-from invenio.modules.jsonalchemy.reader import Reader
+from invenio.base.utils import toposort_send
+from invenio.ext.sqlalchemy import db
+from invenio.utils.datastructures import SmartDict
 
-from . import signals, errors
+from . import errors, signals
+from .models import Document as DocumentMetadata
 
 
-class Document(SmartJson):
-    """Document"""
+class Document(SmartDict):
 
-    __storagename__ = 'documents'
+    """Represent a document object."""
+
+    def __init__(self, data, model=None):
+        self.model = model
+        super(Document, self).__init__(data)
 
     @classmethod
-    def create(cls, data, model='document_base', master_format='json',
-               **kwargs):
-        document = Reader.translate(data, cls, master_format=master_format,
-                                    model=model, namespace='documentext',
-                                    **kwargs)
-        cls.storage_engine.save_one(document.dumps())
-        signals.document_created.send(document)
-        return document
+    def create(cls, data, schema=None, **kwargs):
+        db.session.begin(subtransactions=True)
+        try:
+            data.setdefault('_id', str(uuid.uuid4()))
+            data.setdefault('creation_date', datetime.now().isoformat())
+
+            document = cls(data)
+
+            from invenio.modules.jsonalchemy.registry import functions
+            list(functions('documentext'))
+
+            toposort_send(signals.before_document_insert, document)
+
+            if schema is not None:
+                validate(document, schema)
+
+            model = DocumentMetadata(id=document['_id'], json=dict(document))
+            db.session.add(model)
+            db.session.commit()
+
+            document.model = model
+
+            toposort_send(signals.after_document_insert, document)
+            return document
+        except Exception:
+            current_app.logger.exception("Problem creating a document.")
+            db.session.rollback()
+            raise
 
     @classmethod
     def get_document(cls, uuid, include_deleted=False):
@@ -84,10 +105,7 @@ class Document(SmartJson):
             >>> app = create_app()
             >>> ctx = app.test_request_context()
             >>> ctx.push()
-            >>> from invenio.modules.documents import api
-            >>> from invenio.modules.jsonalchemy.jsonext.engines import memory
-            >>> app.config['DOCUMENTS_ENGINE'] = \
-            "invenio.modules.jsonalchemy.jsonext.engines.memory:MemoryStorage"
+            >>> from invenio_document import api
             >>> d = api.Document.create({'title': 'Title 1'})
             >>> e = api.Document.get_document(d['_id'])
 
@@ -110,36 +128,52 @@ class Document(SmartJson):
 
 
         :returns: a :class:`Document` instance.
-        :raises: :class:`~.invenio.modules.documents.errors.DocumentNotFound`
-            or :class:`~invenio.modules.documents.errors.DeletedDocument`
+        :raises: :class:`~.errors.DocumentNotFound`
+            or :class:`~.errors.DeletedDocument`
         """
         try:
-            document = cls(cls.storage_engine.get_one(uuid),
-                           process_model_info=True)
-        except:
+            model = DocumentMetadata.query.one(uuid)
+            document = cls(model.json, model=model)
+
+            document.setdefault('_id', model.id)
+        except Exception:
             raise errors.DocumentNotFound
 
         if not include_deleted and document['deleted']:
             raise errors.DeletedDocument
         return document
 
-    def _save(self):
+    def commit(self):
+        db.session.begin(subtransactions=True)
         try:
-            self.__class__.storage_engine.update_one(self.dumps(),
-                                                     id=self['_id'])
-        except:
-            self.__class__.storage_engine.save_one(self.dumps(),
-                                                   id=self['_id'])
+            toposort_send(signals.before_document_update, self)
+
+            if self.model is None:
+                self.model = DocumentMetadata.query.get(self['_id'])
+
+            self.model.json = self.dumps()
+
+            db.session.add(self.model)
+            db.session.commit()
+
+            toposort_send(signals.after_document_update, self)
+
+            return self
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def dumps(self, **kwargs):
+        # FIXME add keywords filtering
+        return dict(self)
 
     def update(self):
         """Update document object."""
-        self['modification_date'] = datetime.now()
-        self._save()
-        return self
+        self['modification_date'] = datetime.now().isoformat()
+        return self.commit()
 
     def setcontents(self, source, name, chunk_size=65536):
-        """A convenience method to create a new file from a string or file-like
-        object.
+        """Create a new file from a string or file-like object.
 
         :note: All paths has to be absolute or specified in full URI format.
 
@@ -172,7 +206,7 @@ class Document(SmartJson):
             f.close()
 
         self['uri'] = name
-        self._save()
+        self.commit()
 
     def open(self, mode='r', **kwargs):
         """Open a the 'uri' as a file-like object."""
@@ -194,4 +228,4 @@ class Document(SmartJson):
             fs.remove(filename)
             self['uri'] = None
 
-        self._save()
+        self.commit()

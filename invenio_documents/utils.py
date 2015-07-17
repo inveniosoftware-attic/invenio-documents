@@ -63,8 +63,8 @@ def _get_document(uuid):
 
     :param str uuid: The document's uuid
     """
-    from invenio.modules.documents.api import Document
-    from invenio.modules.documents.errors import (
+    from .api import Document
+    from .errors import (
         DocumentNotFound, DeletedDocument
     )
 

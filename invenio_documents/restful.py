@@ -20,17 +20,17 @@
 from __future__ import absolute_import
 
 import os
+from functools import wraps
 
 from cerberus import Validator
-from fs.opener import opener
-from flask import request, current_app
+from flask import current_app, request
 from flask_login import current_user
 from flask_restful import Resource, abort
-from functools import wraps
-from werkzeug.utils import secure_filename
+from fs.opener import opener
 from werkzeug.http import parse_options_header
+from werkzeug.utils import secure_filename
 
-from invenio.ext.restful import require_api_auth, error_codes, require_header
+from invenio.ext.restful import error_codes, require_api_auth, require_header
 
 from . import errors
 from .api import Document

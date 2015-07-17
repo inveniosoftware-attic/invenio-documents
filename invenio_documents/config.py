@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2015 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,19 +17,6 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""Record field function."""
+"""Defines configuration options for documents."""
 
-
-def get_record_documents(record):
-    """Return list of Document instances.
-
-    :record: Record instance
-    :returns: list of Document instances
-    """
-    from invenio.modules.documents import api
-
-    def _document(mapping):
-        document = api.Document.get_document(d[1])
-        document.__record_filename__ = d[0]
-        return document
-    return [_document(d) for d in record.get('_documents', [])]
+from __future__ import unicode_literals

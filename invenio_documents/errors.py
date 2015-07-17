@@ -17,28 +17,19 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""Document tasks."""
-
-from invenio.celery import celery
-
-from . import api
+"""Define exceptions raised by Document API."""
 
 
-@celery.task
-def set_document_contents(document_id, source, name, **kwargs):
-    """Set content of a document using the Document API.
+class DocumentError(Exception):
 
-    :see:`~invenio.modules.documents.api`
+    """General document exception."""
 
-    :document_id: Id of the document already created.
-    :source: as in :meth:`~invenio.modules.documents.api:Document.setcontents`
-    :name: as in :meth:`~invenio.modules.documents.api:Document.setcontents`
-    :**kwargs: Any other parameter that could be used by
-        :meth:`invenio.modules.documents.api:Document.setcontents`
 
-    """
-    document = api.Document.get_document(document_id)
-    document.setcontents(source, name, kwargs)
-    return document['_id']
+class DocumentNotFound(DocumentError):
 
-__all__ = ['set_document_contents', ]
+    """Document has not been found in database."""
+
+
+class DeletedDocument(DocumentNotFound):
+
+    """Document has not been found because it has been previously deleted."""

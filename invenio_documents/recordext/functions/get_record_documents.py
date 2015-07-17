@@ -17,27 +17,19 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""
-    invenio.modules.documents.errors
-    --------------------------------
-
-    Defines exceptions raised by Document API.
-"""
+"""Record field function."""
 
 
-class DocumentError(Exception):
+def get_record_documents(record):
+    """Return list of Document instances.
+
+    :record: Record instance
+    :returns: list of Document instances
     """
-    General document exception.
-    """
+    from .import api
 
-
-class DocumentNotFound(DocumentError):
-    """
-    Document has not been found in database.
-    """
-
-
-class DeletedDocument(DocumentNotFound):
-    """
-    Document has not been found because it has been previously deleted.
-    """
+    def _document(mapping):
+        document = api.Document.get_document(d[1])
+        document.__record_filename__ = d[0]
+        return document
+    return [_document(d) for d in record.get('_documents', [])]

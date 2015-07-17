@@ -17,21 +17,41 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""
-    invenio.modules.documents.signal
-    --------------------------------
-
-    Defines signals used in document API.
-"""
+"""Define signals used in Document API."""
 
 from blinker import Namespace
+
 _signals = Namespace()
 
-document_created = _signals.signal(
-    'document_created')
+before_document_insert = _signals.signal('before-document-insert')
+"""Signal sent before a document is inserted.
+
+Example subscriber
+
+.. code-block:: python
+
+    def listener(sender, *args, **kwargs):
+        sender['key'] = sum(args)
+
+    from invenio_documents.signals import before_document_insert
+
+    before_document_insert.connect(
+        listener
+    )
 """
-This signal is sent right after the document is created.
+
+after_document_insert = _signals.signal('before-document-insert')
+"""Signal sent after a document is inserted.
+
+.. note::
+    No modification are allowed on document object.
 """
+
+before_document_update = _signals.signal('before-document-update')
+"""Signal sent before a document is update."""
+
+after_document_update = _signals.signal('before-document-update')
+"""Signal sent after a document is updated."""
 
 document_before_content_set = _signals.signal(
     'document-before-content-set')
