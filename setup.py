@@ -92,7 +92,7 @@ setup(
     version=version,
     description=__doc__,
     long_description=readme + '\n\n' + history,
-    keywords='invenio TODO',
+    keywords='invenio documents filesystem',
     license='GPLv2',
     author='CERN',
     author_email='info@invenio-software.org',
@@ -109,7 +109,7 @@ setup(
             'Sphinx>=1.3',
             'sphinx_rtd_theme>=0.1.7'
         ],
-        'tests': test_requirements
+        'tests': test_requirements,
     },
     classifiers=[
         'Environment :: Web Environment',
@@ -125,6 +125,7 @@ setup(
         # 'Programming Language :: Python :: 3',
         # 'Programming Language :: Python :: 3.3',
         # 'Programming Language :: Python :: 3.4',
+        'Development Status :: 1 - Planning',
     ],
     tests_require=test_requirements,
     cmdclass={'test': PyTest},
