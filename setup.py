@@ -88,7 +88,7 @@ with open(os.path.join('invenio_documents', 'version.py'), 'rt') as fp:
     version = g['__version__']
 
 setup(
-    name='Invenio-Documents',
+    name='invenio-documents',
     version=version,
     description=__doc__,
     long_description=readme + '\n\n' + history,

@@ -19,12 +19,12 @@ What's new
 Installation
 ------------
 
-   $ pip install invenio-comments==0.1.0
+   $ pip install invenio-documents==0.1.0
 
 Documentation
 -------------
 
-   http://invenio-comments.readthedocs.org/en/v0.1.0
+   http://invenio-documents.readthedocs.org/en/v0.1.0
 
 Happy hacking and thanks for flying Invenio-Documents.
 
@@ -32,5 +32,5 @@ Happy hacking and thanks for flying Invenio-Documents.
 |   Email: info@invenio-software.org
 |   IRC: #invenio on irc.freenode.net
 |   Twitter: http://twitter.com/inveniosoftware
-|   GitHub: https://github.com/inveniosoftware/invenio-comments
+|   GitHub: https://github.com/inveniosoftware/invenio-documents
 |   URL: http://invenio-software.org
