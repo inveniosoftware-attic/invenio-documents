@@ -19,6 +19,8 @@
 
 """Document utils."""
 
+import warnings
+
 from flask import abort
 
 __all__ = ('identifier_to_path', 'identifier_to_path_and_permissions', )
@@ -86,14 +88,8 @@ def _get_legacy_bibdocs(recid, filename=None):
     :returns: bibdocfile full path
     :rtype: str
     """
-    from invenio.ext.login import current_user
-    from invenio.legacy.bibdocfile.api import BibRecDocs
-    return [
-        (bibdoc.fullpath, bibdoc.is_restricted(current_user))
-        for bibdoc in BibRecDocs(recid).list_latest_files(list_hidden=False)
-        if not bibdoc.subformat and not filename or
-        bibdoc.get_full_name() == filename
-    ]
+    warnings.warn("Use of bibdocfile has been deprecated.", DeprecationWarning)
+    return []
 
 
 def _get_legacy_bibdoc(recid, filename=None):
