@@ -22,7 +22,7 @@
 Following example shows how to handle documents metadata::
 
     >>> from flask import g
-    >>> from invenio.base.factory import create_app
+    >>> from invenio_base.factory import create_app
     >>> app = create_app()
     >>> ctx = app.test_request_context()
     >>> ctx.push()
@@ -48,7 +48,7 @@ from flask import current_app
 from fs.opener import opener
 from jsonschema import validate
 
-from invenio.base.utils import toposort_send
+from invenio_base.utils import toposort_send
 from invenio.ext.sqlalchemy import db
 from invenio.utils.datastructures import SmartDict
 
@@ -101,7 +101,7 @@ class Document(SmartDict):
         Find existing document::
 
             >>> from flask import g
-            >>> from invenio.base.factory import create_app
+            >>> from invenio_base.factory import create_app
             >>> app = create_app()
             >>> ctx = app.test_request_context()
             >>> ctx.push()
