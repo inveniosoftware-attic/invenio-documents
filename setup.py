@@ -38,7 +38,8 @@ requirements = [
     'six>=1.7.2',
     'fs>=0.4',
     'invenio-base>=0.1.0',
-    # FIXME 'Invenio>=2.1',
+    'jsonpatch>=1.11',
+    'jsonschema>=2.5.1',
 ]
 
 test_requirements = [
