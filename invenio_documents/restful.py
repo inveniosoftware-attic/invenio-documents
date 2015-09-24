@@ -30,7 +30,7 @@ from fs.opener import opener
 from werkzeug.http import parse_options_header
 from werkzeug.utils import secure_filename
 
-from invenio.ext.restful import error_codes, require_api_auth, require_header
+from invenio_ext.restful import error_codes, require_api_auth, require_header
 
 from . import errors
 from .api import Document

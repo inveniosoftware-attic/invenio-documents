@@ -49,7 +49,7 @@ from fs.opener import opener
 from jsonschema import validate
 
 from invenio_base.utils import toposort_send
-from invenio.ext.sqlalchemy import db
+from invenio_ext.sqlalchemy import db
 from invenio_utils.datastructures import SmartDict
 
 from . import errors, signals

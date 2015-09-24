@@ -20,7 +20,7 @@
 """Database models used in filesystem abstraction."""
 
 # General imports.
-from invenio.ext.sqlalchemy import db
+from invenio_ext.sqlalchemy import db
 
 
 # Create your models here.
