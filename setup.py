@@ -40,6 +40,7 @@ requirements = [
     'invenio-base>=0.1.0',
     'jsonpatch>=1.11',
     'jsonschema>=2.5.1',
+    'invenio-utils>=0.1.1',
 ]
 
 test_requirements = [

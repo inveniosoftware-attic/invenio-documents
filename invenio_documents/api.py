@@ -50,7 +50,7 @@ from jsonschema import validate
 
 from invenio_base.utils import toposort_send
 from invenio.ext.sqlalchemy import db
-from invenio.utils.datastructures import SmartDict
+from invenio_utils.datastructures import SmartDict
 
 from . import errors, signals
 from .models import Document as DocumentMetadata
