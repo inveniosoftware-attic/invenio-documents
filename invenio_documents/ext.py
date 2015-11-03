@@ -22,5 +22,22 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-[pytest]
-addopts = --pep8 --ignore=docs --cov=invenio_documents --cov-report=term-missing
+"""Invenio module for document management."""
+
+from __future__ import absolute_import, print_function
+
+from .cli import documents as cmd
+
+
+class InvenioDocuments(object):
+    """Invenio-Documents extension."""
+
+    def __init__(self, app=None):
+        """Extension initialization."""
+        if app:
+            self.init_app(app)
+
+    def init_app(self, app):
+        """Flask application initialization."""
+        app.extensions['invenio-documents'] = self
+        app.cli.add_command(cmd)

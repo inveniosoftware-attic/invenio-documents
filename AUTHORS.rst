@@ -24,7 +24,7 @@
 Authors
 =======
 
-Invenio module that adds filesystem abstraction.
+Invenio module for document management.
 
 - Esteban J. G. Gabancho <esteban.gabancho@gmail.com>
 - Harris Tzovanakis <me@drjova.com>

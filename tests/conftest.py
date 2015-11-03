@@ -22,8 +22,44 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-[tox]
-envlist = py27
 
-[testenv]
-commands = {envpython} setup.py test
+"""Pytest configuration."""
+
+from __future__ import absolute_import, print_function
+
+import os
+
+import pytest
+from flask import Flask
+from flask_cli import FlaskCLI
+from invenio_db import InvenioDB, db
+from invenio_records import InvenioRecords
+
+from invenio_documents import InvenioDocuments
+
+
+@pytest.fixture()
+def app(request):
+    """Flask application fixture."""
+    app = Flask('testapp')
+    app.config.update(
+        TESTING=True,
+        SQLALCHEMY_DATABASE_URI=os.environ.get(
+            'SQLALCHEMY_DATABASE_URI', 'sqlite://'
+        ),
+    )
+    FlaskCLI(app)
+    InvenioDB(app)
+    InvenioRecords(app)
+    InvenioDocuments(app)
+
+    with app.app_context():
+        db.create_all()
+
+    def teardown():
+        with app.app_context():
+            db.drop_all()
+
+    request.addfinalizer(teardown)
+
+    return app

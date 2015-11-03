@@ -1,30 +1,30 @@
 ==========================
- Invenio-Documents v0.1.0
+ Invenio-Documents v1.0.0
 ==========================
 
-Invenio-Documents v0.1.0 was released on July 28, 2015.
+Invenio-Documents v1.0.0 was released on November 3, 2015.
 
 About
 -----
 
-Invenio module that adds filesystem abstraction.
+Invenio module for document management.
 
 *This is an experimental development preview release.*
 
 What's new
 ----------
 
-- Initial public release.
+- Major rewrite.
 
 Installation
 ------------
 
-   $ pip install invenio-documents==0.1.0
+   $ pip install invenio-documents==1.0.0
 
 Documentation
 -------------
 
-   http://invenio-documents.readthedocs.org/en/v0.1.0
+   http://invenio-documents.readthedocs.org/en/v1.0.0
 
 Happy hacking and thanks for flying Invenio-Documents.
 

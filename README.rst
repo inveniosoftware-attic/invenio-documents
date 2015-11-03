@@ -41,15 +41,9 @@
         :target: https://github.com/inveniosoftware/invenio-documents/blob/master/LICENSE
 
 
-Invenio module that adds filesystem abstraction.
+Invenio module for document management.
 
-*This is an experimental development preview release.*
+*This is an experimental developer preview release.*
 
 * Free software: GPLv2 license
-* Documentation: https://invenio-documents.readthedocs.org.
-
-Features
-========
-
-- Filesystem abstraction using PyFileSystem package.
-- Metadata storage.
+* Documentation: https://pythonhosted.org/invenio-documents/

@@ -21,15 +21,9 @@
     waive the privileges and immunities granted to it by virtue of its status
     as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-Changes
+
+=======
+ Usage
 =======
 
-Version 1.0.0 (release 2015-11-03)
-----------------------------------
-
-- Major rewrite.
-
-Version 0.1.0 (release 2015-07-28)
-----------------------------------
-
-- Initial public release.
+.. automodule:: invenio_documents
