@@ -31,8 +31,15 @@ import sys
 
 import click
 from flask_cli import with_appcontext
+from invenio_records.api import Record
 
 from .api import Document
+
+__all__ = (
+    'copy_document',
+    'documents',
+    'setcontents',
+)
 
 
 @click.group()
@@ -42,14 +49,12 @@ def documents():
 
 @documents.command(name='cp')
 @click.argument('destination')
-@click.option('-r', '--recid')
+@click.option('-i', '--identifier')
 @click.option('-p', '--pointer')
 @with_appcontext
-def copy_document(destination, recid, pointer):
+def copy_document(destination, identifier, pointer):
     """Copy file to a new destination."""
-    from invenio_records.api import Record
-
-    record = Record.get_record(int(recid))
+    record = Record.get_record(identifier)
     click.echo(json.dumps(
         Document(record, pointer).copy(destination)
     ))
@@ -57,12 +62,10 @@ def copy_document(destination, recid, pointer):
 
 @documents.command()
 @click.argument('source', type=click.File('rb'), default=sys.stdin)
-@click.option('-r', '--recid')
+@click.option('-i', '--identifier')
 @click.option('-p', '--pointer')
 @with_appcontext
-def setcontents(source, recid, pointer):
+def setcontents(source, identifier, pointer):
     """Patch existing bibliographic record."""
-    from invenio_records.api import Record
-
-    record = Record.get_record(int(recid))
+    record = Record.get_record(identifier)
     Document(record, pointer).setcontents(source)

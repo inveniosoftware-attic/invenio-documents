@@ -25,6 +25,24 @@
 API Docs
 ========
 
-invenio_documents
------------------
+.. automodule:: invenio_documents.ext
+   :members:
+   :undoc-members:
 
+Document
+--------
+
+.. automodule:: invenio_documents.api
+   :members:
+   :undoc-members:
+
+
+CLI
+---
+
+.. automodule:: invenio_documents.cli
+   :members:
+
+.. autodata:: invenio_documents.cli.copy_document
+
+.. autodata:: invenio_documents.cli.setcontents

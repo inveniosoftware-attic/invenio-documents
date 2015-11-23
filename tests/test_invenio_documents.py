@@ -137,10 +137,10 @@ def test_cli(app):
         with app.app_context():
             record = Record.create({'title': 'Greetings',
                                     'document': hello_strpath})
-            record_id = record.model.id
+            record_id = record.id
 
         result = runner.invoke(
-            cmd, ['cp', '-r', record_id, '-p', '/document', copy_strpath],
+            cmd, ['cp', '-i', record_id, '-p', '/document', copy_strpath],
             obj=script_info
         )
         assert result.exit_code == 0
@@ -149,7 +149,7 @@ def test_cli(app):
 
         result = runner.invoke(
             cmd,
-            ['setcontents', '-r', record_id, '-p', '/document', bye_strpath],
+            ['setcontents', '-i', record_id, '-p', '/document', bye_strpath],
             obj=script_info
         )
         assert result.exit_code == 0
