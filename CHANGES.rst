@@ -24,10 +24,11 @@
 Changes
 =======
 
-Version 1.0.0 (release 2015-11-03)
+Version 1.0.0 (release 2015-12-10)
 ----------------------------------
 
-- Major rewrite.
+- Implements brand new API for managing files in record metadata.
+  (#7)
 
 Version 0.1.0 (release 2015-07-28)
 ----------------------------------

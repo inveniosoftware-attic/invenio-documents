@@ -2,7 +2,7 @@
  Invenio-Documents v1.0.0
 ==========================
 
-Invenio-Documents v1.0.0 was released on November 3, 2015.
+Invenio-Documents v1.0.0 was released on December 10, 2015.
 
 About
 -----
@@ -11,10 +11,11 @@ Invenio module for document management.
 
 *This is an experimental development preview release.*
 
-What's new
-----------
+Incompatible changes
+--------------------
 
-- Major rewrite.
+- Implements brand new API for managing files in record metadata.
+  (#7)
 
 Installation
 ------------
