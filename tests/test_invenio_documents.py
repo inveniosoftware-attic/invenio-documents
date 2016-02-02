@@ -32,6 +32,7 @@ import os
 from click.testing import CliRunner
 from flask import Flask
 from flask_cli import FlaskCLI, ScriptInfo
+from invenio_db import db
 from invenio_records import Record
 
 from invenio_documents import Document, InvenioDocuments
@@ -137,6 +138,7 @@ def test_cli(app):
         with app.app_context():
             record = Record.create({'title': 'Greetings',
                                     'document': hello_strpath})
+            db.session.commit()
             record_id = record.id
 
         result = runner.invoke(
